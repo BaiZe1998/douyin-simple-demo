@@ -6,7 +6,6 @@ import (
 	"github.com/BaiZe1998/douyin-simple-demo/db"
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
 	"testing"
-	"time"
 )
 
 func TestFavorite(t *testing.T) {
@@ -19,10 +18,12 @@ func TestFavorite(t *testing.T) {
 	//value, _ := db.CacheGetList(context.Background(), "default", "user_list", []dto.User{})
 	//op, ok := value.([]dto.User)
 	//fmt.Println("------------", op, ok)
-	videoList := make([]dto.Video, 0)
-	videoList = append(videoList, dto.Video{Id: 1})
-	videoList = append(videoList, dto.Video{Id: 2})
-	db.CacheSetList(context.Background(), "default", "video_list", videoList, time.Minute*20)
-	value, _ := db.CacheGetList(context.Background(), "default", "video_list", []dto.Video{})
-	fmt.Println("------------", value)
+	//videoList := make([]dto.Video, 0)
+	//videoList = append(videoList, dto.Video{Id: 1})
+	//videoList = append(videoList, dto.Video{Id: 2})
+	//db.CacheSetList(context.Background(), "default", "video_list", videoList, time.Minute*20)
+	//value, _ := db.CacheGetList(context.Background(), "default", "video_list", []dto.Video{})
+	//fmt.Println("------------", value)
+	value, err := GetFavoriteList(context.Background(), 11)
+	fmt.Println(value, err)
 }

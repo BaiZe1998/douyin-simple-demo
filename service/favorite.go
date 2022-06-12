@@ -2,11 +2,11 @@ package service
 
 import (
 	"context"
-	"errors"
 	"fmt"
 	"github.com/BaiZe1998/douyin-simple-demo/db"
 	"github.com/BaiZe1998/douyin-simple-demo/db/model"
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
+	"strconv"
 	"time"
 )
 
@@ -84,21 +84,19 @@ func LoadFavoriteListCache(ctx context.Context, userId int64) ([]dto.Video, erro
 		isExist, isFollow := IsFollow(ctx, userId, author.ID)
 		if isExist && isFollow {
 			user.IsFollow = true
-		} else {
-			return nil, errors.New("get favorite video list error")
 		}
 		video.Author = user
 		video.IsFavorite = true
 		favoriteVideoList = append(favoriteVideoList, video)
 		fmt.Println(video)
 	}
-	db.CacheSetList(context.Background(), "default", "favorite_video_list", favoriteVideoList, time.Hour)
+	db.CacheSetList(context.Background(), "default", "favorite_video_list"+strconv.FormatInt(userId, 10), favoriteVideoList, time.Hour)
 	return favoriteVideoList, nil
 }
 
 func GetFavoriteList(ctx context.Context, userId int64) ([]dto.Video, error) {
 
-	favoriteList, _ := db.CacheGetList(context.Background(), "default", "favorite_list", []dto.Video{})
+	favoriteList, _ := db.CacheGetList(context.Background(), "default", "favorite_video_list"+strconv.FormatInt(userId, 10), []dto.Video{})
 	if favoriteList != nil {
 		return favoriteList, nil
 	} else {
