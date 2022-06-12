@@ -14,7 +14,7 @@ import (
 	"time"
 )
 
-func UploadVideoAliyun(file *multipart.FileHeader, token string, title string, userid int64) {
+func UploadVideoAliyun(file *multipart.FileHeader, token string, title string, userid int64) *model.Video {
 	vodClient := util.OOSInit()
 	request := vod.CreateCreateUploadVideoRequest()
 	request.Title = title
@@ -22,7 +22,7 @@ func UploadVideoAliyun(file *multipart.FileHeader, token string, title string, u
 	response, err := vodClient.CreateUploadVideo(request)
 	if err != nil {
 		fmt.Println("Error:", err)
-		return
+		return nil
 	}
 	var videoId = response.VideoId
 	var uploadAuthDTO UploadAuthDTO
@@ -36,7 +36,7 @@ func UploadVideoAliyun(file *multipart.FileHeader, token string, title string, u
 	// 上传文件，注意是同步上传会阻塞等待，耗时与文件大小和网络上行带宽有关
 	open, err := file.Open()
 	if err != nil {
-		return
+		return nil
 	}
 	UploadLocalFile(ossClient, uploadAddressDTO, open)
 	//MultipartUploadFile(ossClient, uploadAddressDTO, localFile)
@@ -56,8 +56,9 @@ func UploadVideoAliyun(file *multipart.FileHeader, token string, title string, u
 	}
 	err = model.CreateVideo(context.Background(), video)
 	if err != nil {
-		return
+		return nil
 	}
+	return video
 }
 
 func InitOssClient(uploadAuthDTO UploadAuthDTO, uploadAddressDTO UploadAddressDTO) (*oss.Client, error) {
