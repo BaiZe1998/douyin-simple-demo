@@ -2,7 +2,6 @@ package service
 
 import (
 	"context"
-	"fmt"
 	"github.com/BaiZe1998/douyin-simple-demo/db"
 	"github.com/BaiZe1998/douyin-simple-demo/db/model"
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
@@ -35,7 +34,6 @@ func FavoriteCountAction(ctx context.Context, videoID int64, actionType int) err
 func FavoriteAction(ctx context.Context, userID int64, videoID int64, actionType int) error {
 	isExist, isFavorite := IsFavorite(ctx, userID, videoID)
 
-	// TODO 修改video的点赞数据
 	if !isExist {
 		// 不存在的关系直接创建
 		favorite := model.Favorite{
@@ -88,7 +86,6 @@ func LoadFavoriteListCache(ctx context.Context, userId int64) ([]dto.Video, erro
 		video.Author = user
 		video.IsFavorite = true
 		favoriteVideoList = append(favoriteVideoList, video)
-		fmt.Println(video)
 	}
 	db.CacheSetList(context.Background(), "default", "favorite_video_list"+strconv.FormatInt(userId, 10), favoriteVideoList, time.Hour)
 	return favoriteVideoList, nil

@@ -8,9 +8,6 @@ import (
 	"log"
 	"strconv"
 	"time"
-
-	"github.com/BaiZe1998/douyin-simple-demo/db/model"
-	"github.com/BaiZe1998/douyin-simple-demo/dto"
 )
 
 type videoListType struct {
