@@ -3,8 +3,8 @@ package controller
 import "github.com/BaiZe1998/douyin-simple-demo/dto"
 
 type Response struct {
-	StatusCode int32  `json:"status_code"`
-	StatusMsg  string `json:"status_msg,omitempty"`
+	StatusCode int32  `json:"StatusCode"`
+	StatusMsg  string `json:"StatusMsg,omitempty"`
 	NextTime   int64  `json:"next_time,omitempty"`
 }
 

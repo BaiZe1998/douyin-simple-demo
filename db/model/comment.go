@@ -8,11 +8,11 @@ import (
 )
 
 type Comment struct {
-	ID        int64 `gorm:"primarykey"`
-	UserId    int64
-	VideoId   int64
-	Content   string
-	Status    int
+	ID        int64  `gorm:"primarykey"`
+	UserId    int64  `gorm:"column:user_id"`
+	VideoId   int64  `gorm:"column:video_id"`
+	Content   string `gorm:"column:content"`
+	Status    int    `gorm:"column:ststus"`
 	CreatedAt time.Time
 	UpdatedAt time.Time
 }

@@ -35,7 +35,7 @@ func CommentAction(c *gin.Context) {
 			responseComment := service.AddComment(text, users, videoId)
 			c.JSON(http.StatusOK,
 				dto.CommentActionResponse{
-					Response: dto.Response{StatusCode: 0},
+					Response: dto.Response{StatusCode: 0, StatusMsg: "成功"},
 					Comment:  responseComment,
 				})
 		} else {

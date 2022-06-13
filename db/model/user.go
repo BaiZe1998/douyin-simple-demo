@@ -6,12 +6,13 @@ import (
 )
 
 type User struct {
-	ID            int64 `gorm:"primarykey"`
-	Name          string
-	Password      string
-	FollowCount   int64
-	FollowerCount int64
-	CreatedAt     time.Time
+	ID              int64 `gorm:"primarykey"`
+	Name            string
+	Password        string
+	FollowCount     int64
+	FollowerCount   int64
+	BackgroundImage string `gorm:"column:background_image"`
+	CreatedAt       time.Time
 }
 
 //CteateUser create user info

@@ -2,13 +2,14 @@ package controller
 
 import (
 	"context"
+	"log"
+	"net/http"
+
 	"github.com/BaiZe1998/douyin-simple-demo/db/model"
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
 	"github.com/BaiZe1998/douyin-simple-demo/pkg/util"
 	"github.com/BaiZe1998/douyin-simple-demo/service"
 	"github.com/gin-gonic/gin"
-	"log"
-	"net/http"
 )
 
 // usersLoginInfo use map to store user info, and key is username+password for demo
@@ -45,8 +46,9 @@ func Register(c *gin.Context) {
 		})
 	} else {
 		newUser := &model.User{
-			Name:     username,
-			Password: password,
+			Name:            username,
+			Password:        password,
+			BackgroundImage: "https://tse2-mm.cn.bing.net/th/id/OIP-C.sDoybxmH4DIpvO33-wQEPgHaEq?pid=ImgDet&rs=1",
 		}
 		//userinfo register
 		model.CreateUser(context.Background(), newUser)
@@ -98,11 +100,12 @@ func UserInfo(c *gin.Context) {
 	userModel, _ := model.QueryUserById(context.Background(), userClaims.ID)
 
 	user := dto.User{
-		Id:            userModel.ID,
-		Name:          userModel.Name,
-		FollowCount:   userModel.FollowCount,
-		FollowerCount: userModel.FollowerCount,
-		IsFollow:      false,
+		Id:              userModel.ID,
+		Name:            userModel.Name,
+		FollowCount:     userModel.FollowCount,
+		FollowerCount:   userModel.FollowerCount,
+		IsFollow:        false,
+		BackgroundImage: userModel.BackgroundImage,
 	}
 	c.JSON(http.StatusOK, dto.UserResponse{
 		Response: dto.Response{StatusCode: 0},
