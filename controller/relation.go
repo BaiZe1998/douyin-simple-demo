@@ -28,7 +28,7 @@ func RelationAction(c *gin.Context) {
 		})
 	} else {
 		c.JSON(http.StatusAccepted, dto.Response{
-			StatusCode: 1,
+			StatusCode: 0,
 			StatusMsg:  "操作成功",
 		})
 	}

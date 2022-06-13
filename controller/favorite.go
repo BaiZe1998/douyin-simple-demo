@@ -1,11 +1,13 @@
 package controller
 
 import (
+	"fmt"
+	"net/http"
+	"strconv"
+
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
 	"github.com/BaiZe1998/douyin-simple-demo/service"
 	"github.com/gin-gonic/gin"
-	"net/http"
-	"strconv"
 )
 
 // FavoriteAction no practical effect, just check if token is valid
@@ -15,11 +17,13 @@ func FavoriteAction(c *gin.Context) {
 	VideoID, _ := strconv.ParseInt(c.Query("video_id"), 10, 64)
 	actionType, _ := strconv.ParseInt(c.Query("action_type"), 10, 64)
 	if err := service.FavoriteAction(c, UserID, VideoID, int(actionType)); err != nil {
+		fmt.Printf("失败")
 		c.JSON(http.StatusBadRequest, dto.Response{
 			StatusCode: 1,
 			StatusMsg:  err.Error(),
 		})
 	}
+
 	c.JSON(http.StatusOK, VideoListResponse{
 		Response: Response{
 			StatusCode: 0,
