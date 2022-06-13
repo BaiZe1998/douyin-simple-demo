@@ -2,11 +2,13 @@ package controller
 
 import (
 	"context"
-	"github.com/BaiZe1998/douyin-simple-demo/db"
+	"fmt"
 	"log"
 	"net/http"
 	"strconv"
 	"time"
+
+	"github.com/BaiZe1998/douyin-simple-demo/db"
 
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
 	"github.com/BaiZe1998/douyin-simple-demo/pkg/util"
@@ -19,6 +21,8 @@ func Feed(c *gin.Context) {
 	lastTime := c.Query("latest_time")
 	token := c.Query("token")
 	if token != "" {
+
+		fmt.Println("进入一号")
 		userInfo, parseTokenErr := util.ParseToken(token)
 		if parseTokenErr != nil {
 			dto.WriteLog(
@@ -37,7 +41,7 @@ func Feed(c *gin.Context) {
 		}
 		videoList, reTime := service.QueryFeedResponse(userInfo.ID, lastTime)
 		log.Println(reTime.Unix())
-		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userInfo.ID, 10), videoList, time.Hour)
+		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userInfo.ID, 10), videoList, time.Minute)
 		if err != nil {
 			return
 		}
@@ -48,6 +52,7 @@ func Feed(c *gin.Context) {
 			VideoList: videoList,
 		})
 	} else {
+		fmt.Println("进入二号")
 		list, err := db.CacheGetList(context.Background(), "default", "noTokenFeedList", []dto.Video{})
 		if err == nil {
 			c.JSON(http.StatusOK, dto.FeedResponse{
@@ -59,7 +64,7 @@ func Feed(c *gin.Context) {
 			return
 		}
 		videoList, reTime := service.NoTokenQueryFeedResponse(lastTime)
-		err = db.CacheSetList(context.Background(), "default", "feedList", videoList, time.Hour)
+		err = db.CacheSetList(context.Background(), "default", "feedList", videoList, time.Minute)
 		if err != nil {
 			return
 		}
