@@ -41,7 +41,7 @@ func QueryFeedResponse(useId int64, lastTime string) ([]dto.Video, time.Time) {
 	// _, res := model.QueryVideoList(context.Background(), lastTime)
 
 	var res []videoListType
-	sqlQuery := fmt.Sprintf("SELECT video.*, IFNULL(favoriteList.status, 2) AS IsFavorite, IFNULL(followList.status, 2) as IsFollow, user.name AS AuthorName, user.follow_count AS AuthorFollowCount, user.follower_count AS AuthorFollowerCount FROM video LEFT JOIN (SELECT video_id, user_id, status FROM favorite WHERE %d) AS favoriteList ON video.id = favoriteList.video_id LEFT JOIN ( SELECT followed_user, status FROM follow WHERE %d) AS followList ON video.author_id = followList.followed_user LEFT JOIN user ON video.author_id=user.id LIMIT 10;", useId, useId)
+	sqlQuery := fmt.Sprintf("SELECT video.*, IFNULL(favoriteList.status, 2) AS IsFavorite, IFNULL(followList.status, 2) as IsFollow, user.name AS AuthorName, user.follow_count AS AuthorFollowCount, user.follower_count AS AuthorFollowerCount FROM video LEFT JOIN (SELECT video_id, user_id, status FROM favorite WHERE %d) AS favoriteList ON video.id = favoriteList.video_id LEFT JOIN ( SELECT followed_user, status FROM follow WHERE %d) AS followList ON video.author_id = followList.followed_user LEFT JOIN user ON video.author_id=user.id ORDER BY created_at desc LIMIT 10;", useId, useId)
 	queryErr := model.DB.Raw(sqlQuery).Scan(&res).Error
 
 	if queryErr != nil {
