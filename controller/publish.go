@@ -3,10 +3,11 @@ package controller
 import (
 	"context"
 	"fmt"
-	"github.com/BaiZe1998/douyin-simple-demo/db"
-	"github.com/BaiZe1998/douyin-simple-demo/db/model"
 	"strconv"
 	"time"
+
+	"github.com/BaiZe1998/douyin-simple-demo/db"
+	"github.com/BaiZe1998/douyin-simple-demo/db/model"
 
 	"github.com/BaiZe1998/douyin-simple-demo/dto"
 	"github.com/BaiZe1998/douyin-simple-demo/service"
@@ -95,7 +96,7 @@ func PublishList(c *gin.Context) {
 			VideoList: list,
 		})
 	} else {
-		videoList := service.QueryPublishList(strconv.FormatInt(userId, 10))
+		videoList := service.QueryPublishList1(userId)
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response: Response{
 				StatusCode: 0,
