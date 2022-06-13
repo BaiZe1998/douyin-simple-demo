@@ -16,10 +16,12 @@ type Favorite struct {
 }
 
 func CreateFavorite(ctx context.Context, favorite *Favorite) error {
-	if err := DB.Table("favorite").WithContext(ctx).Create(favorite).Error; err != nil {
+	tx := DB.Begin()
+	if err := tx.Table("favorite").WithContext(ctx).Create(favorite).Error; err != nil {
+		tx.Rollback()
 		return err
 	}
-	return nil
+	return tx.Commit().Error
 }
 
 func UpdateFavorite(ctx context.Context, userID, videoID int64, status *int) error {
@@ -27,8 +29,13 @@ func UpdateFavorite(ctx context.Context, userID, videoID int64, status *int) err
 	if status != nil {
 		params["status"] = *status
 	}
-	return DB.Table("favorite").WithContext(ctx).Model(&Favorite{}).Where("user_id = ? and video_id = ?", userID, videoID).
-		Updates(params).Error
+	tx := DB.Begin()
+	if err := DB.Table("favorite").WithContext(ctx).Model(&Favorite{}).Where("user_id = ? and video_id = ?", userID, videoID).
+		Updates(params).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	return tx.Commit().Error
 }
 
 func QueryFavorite(ctx context.Context, userID int64, videoID int64) (Favorite, error) {

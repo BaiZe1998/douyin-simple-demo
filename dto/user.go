@@ -6,6 +6,8 @@ type User struct {
 	FollowCount     int64  `json:"follow_count"`
 	FollowerCount   int64  `json:"follower_count"`
 	IsFollow        bool   `json:"is_follow,omitempty"`
+	Signature       string `json:"signature,omitempty"`
+	Avatar          string `json:"avatar,omitempty"`
 	BackgroundImage string `json:"background_image,omitempty"`
 }
 
