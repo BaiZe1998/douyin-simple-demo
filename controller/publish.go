@@ -49,7 +49,7 @@ func Publish(c *gin.Context) {
 			Title:         reVideo.Title,
 		}
 		videos := append([]dto.Video{video}, list...)
-		db.CacheSetList(context.Background(), "default", "publishList-"+strconv.FormatInt(userId, 10), videos, time.Hour)
+		db.CacheSetList(context.Background(), "default", "publishList-"+strconv.FormatInt(userId, 10), videos, time.Minute)
 	}
 	//feedList
 	list, err = db.CacheGetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userId, 10), []dto.Video{})
@@ -75,7 +75,7 @@ func Publish(c *gin.Context) {
 			Title:         reVideo.Title,
 		}
 		videos := append([]dto.Video{video}, list...)
-		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userId, 10), videos, time.Hour)
+		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userId, 10), videos, time.Minute)
 	}
 	c.JSON(http.StatusOK, Response{
 		StatusCode: 0,
@@ -95,14 +95,14 @@ func PublishList(c *gin.Context) {
 			VideoList: list,
 		})
 	} else {
-		videoList := service.QueryPublishList1(userId)
+		videoList := service.QueryPublishList(strconv.FormatInt(userId, 10))
 		c.JSON(http.StatusOK, VideoListResponse{
 			Response: Response{
 				StatusCode: 0,
 			},
 			VideoList: videoList,
 		})
-		err := db.CacheSetList(context.Background(), "default", "publishList-"+c.Query("user_id"), videoList, time.Hour)
+		err := db.CacheSetList(context.Background(), "default", "publishList-"+c.Query("user_id"), videoList, time.Minute)
 		if err != nil {
 			dto.WriteLog("error", "err", err.Error())
 			return

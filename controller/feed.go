@@ -37,7 +37,7 @@ func Feed(c *gin.Context) {
 		}
 		videoList, reTime := service.QueryFeedResponse(userInfo.ID, lastTime)
 		log.Println(reTime.Unix())
-		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userInfo.ID, 10), videoList, time.Hour)
+		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userInfo.ID, 10), videoList, time.Minute)
 		if err != nil {
 			return
 		}
@@ -59,7 +59,7 @@ func Feed(c *gin.Context) {
 			return
 		}
 		videoList, reTime := service.NoTokenQueryFeedResponse(lastTime)
-		err = db.CacheSetList(context.Background(), "default", "feedList", videoList, time.Hour)
+		err = db.CacheSetList(context.Background(), "default", "feedList", videoList, time.Minute)
 		if err != nil {
 			return
 		}
