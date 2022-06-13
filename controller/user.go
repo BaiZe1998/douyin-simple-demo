@@ -49,6 +49,8 @@ func Register(c *gin.Context) {
 			Name:            username,
 			Password:        password,
 			BackgroundImage: "https://tse2-mm.cn.bing.net/th/id/OIP-C.sDoybxmH4DIpvO33-wQEPgHaEq?pid=ImgDet&rs=1",
+			Avatar:          "https://p3-passport.byteacctimg.com/img/user-avatar/dbc6c60e44668ebc05e930c5c3c3e8e7~300x300.image",
+			Signature:       "Go语言学习中...",
 		}
 		//userinfo register
 		model.CreateUser(context.Background(), newUser)

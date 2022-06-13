@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"log"
 	"time"
 )
 
@@ -22,6 +23,7 @@ func CreateUser(ctx context.Context, user *User) error {
 	tx := DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {
+			log.Println("create user error")
 			tx.Rollback()
 		}
 	}()
@@ -32,7 +34,7 @@ func CreateUser(ctx context.Context, user *User) error {
 		tx.Rollback()
 		return err
 	}
-	return nil
+	return tx.Commit().Error
 }
 
 //QueryUser Quert User By Name
