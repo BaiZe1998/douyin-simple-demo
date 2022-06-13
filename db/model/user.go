@@ -11,7 +11,9 @@ type User struct {
 	Password        string
 	FollowCount     int64
 	FollowerCount   int64
-	BackgroundImage string `gorm:"column:background_image"`
+	Avatar          string
+	BackgroundImage string
+	Signature       string
 	CreatedAt       time.Time
 }
 

@@ -106,6 +106,8 @@ func UserInfo(c *gin.Context) {
 		FollowerCount:   userModel.FollowerCount,
 		IsFollow:        false,
 		BackgroundImage: userModel.BackgroundImage,
+		Avatar:          userModel.Avatar,
+		Signature:       userModel.Signature,
 	}
 	c.JSON(http.StatusOK, dto.UserResponse{
 		Response: dto.Response{StatusCode: 0},
