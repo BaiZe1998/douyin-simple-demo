@@ -62,7 +62,7 @@ func QueryPublishList1(useId int64) []dto.Video {
 	// _, res := model.QueryVideoList(context.Background(), lastTime)
 
 	var res []videoListType
-	sqlQuery := fmt.Sprintf("SELECT video.*, IFNULL(favoriteList.status, 2) AS IsFavorite, IFNULL(followList.status, 2) as IsFollow, user.name AS AuthorName, user.follow_count AS AuthorFollowCount, user.follower_count AS AuthorFollowerCount FROM video LEFT JOIN (SELECT video_id, user_id, status FROM favorite WHERE %d) AS favoriteList ON video.id = favoriteList.video_id LEFT JOIN ( SELECT followed_user, status FROM follow WHERE %d) AS followList ON video.author_id = followList.followed_user LEFT JOIN user ON video.author_id=user.id LIMIT 10;", useId, useId)
+	sqlQuery := fmt.Sprintf("SELECT video.*, IFNULL(favoriteList.status, 2) AS IsFavorite, IFNULL(followList.status, 2) as IsFollow, user.name AS AuthorName, user.follow_count AS AuthorFollowCount, user.follower_count AS AuthorFollowerCount FROM video LEFT JOIN (SELECT video_id, user_id, status FROM favorite WHERE user_id=%d) AS favoriteList ON video.id = favoriteList.video_id LEFT JOIN ( SELECT followed_user, status FROM follow WHERE user_id=%d) AS followList ON video.author_id = followList.followed_user LEFT JOIN user ON video.author_id=user.id WHERE author_id=%d LIMIT 10;", useId, useId, useId)
 	queryErr := model.DB.Raw(sqlQuery).Scan(&res).Error
 	if queryErr != nil {
 		fmt.Println(queryErr)

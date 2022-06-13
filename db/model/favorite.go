@@ -2,8 +2,9 @@ package model
 
 import (
 	"context"
-	"gorm.io/gorm"
 	"time"
+
+	"gorm.io/gorm"
 )
 
 type Favorite struct {
@@ -30,8 +31,11 @@ func UpdateFavorite(ctx context.Context, userID, videoID int64, status *int) err
 		params["status"] = *status
 	}
 	tx := DB.Begin()
-	if err := DB.Table("favorite").WithContext(ctx).Model(&Favorite{}).Where("user_id = ? and video_id = ?", userID, videoID).
-		Updates(params).Error; err != nil {
+	// if err := DB.Table("favorite").WithContext(ctx).Where("user_id = ? and video_id = ?", userID, videoID).Updates(params).Error; err != nil {
+	// 	tx.Rollback()
+	// 	return err
+	// }
+	if err := DB.Table("favorite").Raw("UPDATE favorite SET status=%d WHERE user_id=%d and video_id=%d", *status, userID, videoID).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
