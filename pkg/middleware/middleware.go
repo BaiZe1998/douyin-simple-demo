@@ -1,9 +1,15 @@
 package middleware
 
 import (
+	"context"
 	"fmt"
+	"github.com/BaiZe1998/douyin-simple-demo/dto"
+	"golang.org/x/time/rate"
+	"net/http"
 	"net/url"
 	"strings"
+	"sync"
+	"time"
 
 	"github.com/BaiZe1998/douyin-simple-demo/pkg/util"
 	"github.com/gin-gonic/gin"
@@ -58,6 +64,26 @@ func Authorize() gin.HandlerFunc {
 			}
 			c.Set("token", userClaims)
 			c.Set("user_id", userClaims.ID)
+		}
+		c.Next()
+	}
+}
+
+func Limiter(r rate.Limit, b int, t time.Duration) gin.HandlerFunc {
+	limiters := &sync.Map{}
+
+	return func(c *gin.Context) {
+		// 获取限速器
+		key := c.ClientIP()
+		l, _ := limiters.LoadOrStore(key, rate.NewLimiter(r, b))
+
+		// gin 的 context 默认是没有超时时间的
+		ctx, cancel := context.WithTimeout(c, t)
+		defer cancel()
+
+		if err := l.(*rate.Limiter).Wait(ctx); err != nil {
+			dto.WriteLog("error", key+"请求过于频繁")
+			c.AbortWithStatusJSON(http.StatusTooManyRequests, gin.H{"error": err})
 		}
 		c.Next()
 	}

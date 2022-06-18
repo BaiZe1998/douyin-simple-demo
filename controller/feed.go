@@ -2,7 +2,6 @@ package controller
 
 import (
 	"context"
-	"fmt"
 	"log"
 	"net/http"
 	"strconv"
@@ -22,7 +21,7 @@ func Feed(c *gin.Context) {
 	token := c.Query("token")
 	if token != "" {
 
-		fmt.Println("进入一号")
+		//fmt.Println("进入一号")
 		userInfo, parseTokenErr := util.ParseToken(token)
 		if parseTokenErr != nil {
 			dto.WriteLog(
@@ -52,7 +51,7 @@ func Feed(c *gin.Context) {
 			VideoList: videoList,
 		})
 	} else {
-		fmt.Println("进入二号")
+		//fmt.Println("进入二号")
 		list, err := db.CacheGetList(context.Background(), "default", "noTokenFeedList", []dto.Video{})
 		if err == nil {
 			c.JSON(http.StatusOK, dto.FeedResponse{

@@ -1,9 +1,9 @@
 package dto
 
 import (
+	"github.com/BaiZe1998/douyin-simple-demo/pkg/util"
 	"io/ioutil"
 
-	"github.com/BaiZe1998/douyin-simple-demo/pkg/util"
 	"gopkg.in/yaml.v2"
 )
 

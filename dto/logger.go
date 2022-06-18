@@ -2,6 +2,10 @@ package dto
 
 import (
 	"fmt"
+	"github.com/gin-gonic/gin"
+	"github.com/natefinch/lumberjack"
+	"go.uber.org/zap"
+	"go.uber.org/zap/zapcore"
 	"net"
 	"net/http"
 	"net/http/httputil"
@@ -9,11 +13,6 @@ import (
 	"runtime/debug"
 	"strings"
 	"time"
-
-	"github.com/gin-gonic/gin"
-	"github.com/natefinch/lumberjack"
-	"go.uber.org/zap"
-	"go.uber.org/zap/zapcore"
 )
 
 var Lg *zap.Logger
