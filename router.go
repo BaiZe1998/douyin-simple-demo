@@ -4,6 +4,7 @@ import (
 	"github.com/BaiZe1998/douyin-simple-demo/controller"
 	"github.com/BaiZe1998/douyin-simple-demo/pkg/middleware"
 	"github.com/gin-gonic/gin"
+	"time"
 )
 
 func initRouter(r *gin.Engine) {
@@ -11,6 +12,7 @@ func initRouter(r *gin.Engine) {
 	r.Static("/static", "./public")
 	apiRouter := r.Group("/douyin")
 	apiRouter.Use(middleware.Authorize())
+	apiRouter.Use(middleware.Limiter(5, 20, 500*time.Microsecond))
 	// basic apis
 	apiRouter.GET("/feed/", controller.Feed)
 	apiRouter.GET("/user/", controller.UserInfo)
