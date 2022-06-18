@@ -77,7 +77,6 @@ func Limiter(r rate.Limit, b int, t time.Duration) gin.HandlerFunc {
 		key := c.ClientIP()
 		l, _ := limiters.LoadOrStore(key, rate.NewLimiter(r, b))
 
-		// gin 的 context 默认是没有超时时间的
 		ctx, cancel := context.WithTimeout(c, t)
 		defer cancel()
 
