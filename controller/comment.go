@@ -43,7 +43,7 @@ func CommentAction(c *gin.Context) {
 			//comment delete
 			model.DeleteCommnet(context.Background(), videoId, userModel.ID, commentId)
 
-			c.JSON(http.StatusOK, Response{StatusCode: 0})
+			c.JSON(http.StatusOK, dto.Response{StatusCode: 0})
 		}
 		var wg sync.WaitGroup
 		wg.Add(1)
@@ -52,7 +52,7 @@ func CommentAction(c *gin.Context) {
 			service.UpdatCacheCommentList(context.Background(), videoId, 10, 0)
 		}()
 	} else {
-		c.JSON(http.StatusOK, Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
+		c.JSON(http.StatusOK, dto.Response{StatusCode: 1, StatusMsg: "User doesn't exist"})
 	}
 }
 

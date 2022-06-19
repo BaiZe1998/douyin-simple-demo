@@ -24,8 +24,8 @@ func FavoriteAction(c *gin.Context) {
 		})
 	}
 
-	c.JSON(http.StatusOK, VideoListResponse{
-		Response: Response{
+	c.JSON(http.StatusOK, dto.VideoListResponse{
+		Response: dto.Response{
 			StatusCode: 0,
 			StatusMsg:  "操作成功",
 		},
@@ -37,8 +37,8 @@ func FavoriteList(c *gin.Context) {
 	UserIdFromC, _ := c.Get("user_id")
 	UserID, _ := UserIdFromC.(int64)
 	videoList, _ := service.GetFavoriteList(c, UserID)
-	c.JSON(http.StatusOK, VideoListResponse{
-		Response: Response{
+	c.JSON(http.StatusOK, dto.VideoListResponse{
+		Response: dto.Response{
 			StatusCode: 0,
 		},
 		VideoList: videoList,
