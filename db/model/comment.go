@@ -72,7 +72,7 @@ func QueryComment(ctx context.Context, videoId int64, limit, offset int) ([]Comm
 }
 
 // DeleteComment delete comment info
-func DeleteCommnet(ctx context.Context, videoId int64, commentId int64) error {
+func DeleteCommnet(ctx context.Context, videoId int64, userId int64, commentId int64) error {
 	tx := DB.Begin()
 	defer func() {
 		if r := recover(); r != nil {
@@ -82,7 +82,7 @@ func DeleteCommnet(ctx context.Context, videoId int64, commentId int64) error {
 	if err := tx.Error; err != nil {
 		return err
 	}
-	if err := tx.Table("comment").WithContext(ctx).Where("id = ?  ", commentId).Update("status", 2).Error; err != nil {
+	if err := tx.Table("comment").WithContext(ctx).Where("id = ? and user_id ", commentId, userId).Update("status", 2).Error; err != nil {
 		tx.Rollback()
 		return err
 	}
