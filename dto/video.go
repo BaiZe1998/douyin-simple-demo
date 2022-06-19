@@ -17,3 +17,8 @@ type FeedResponse struct {
 	NextTime     int64   `json:"next_time,omitempty"`
 	CommentCount int64   `json:"comment_count,omitempty"`
 }
+
+type VideoListResponse struct {
+	Response
+	VideoList []Video `json:"video_list"`
+}

@@ -20,17 +20,6 @@ func IsFavorite(ctx context.Context, userID int64, videoID int64) (isExist bool,
 	return true, false
 }
 
-func FavoriteCountAction(ctx context.Context, videoID int64, actionType int) error {
-	if actionType == 1 {
-		// 视频点赞数+1
-		model.UpdateVideoFavorite(ctx, videoID, 1)
-	} else {
-		// 视频点赞数-1
-		model.UpdateVideoFavorite(ctx, videoID, -1)
-	}
-	return nil
-}
-
 func FavoriteAction(ctx context.Context, userID int64, videoID int64, actionType int) error {
 	isExist, isFavorite := IsFavorite(ctx, userID, videoID)
 
@@ -44,16 +33,16 @@ func FavoriteAction(ctx context.Context, userID int64, videoID int64, actionType
 		if err := model.CreateFavorite(ctx, &favorite); err != nil {
 			return err
 		}
-		FavoriteCountAction(ctx, videoID, actionType)
+		dto.WriteLog("info", "点赞视频")
 		// 重新刷新点赞列表
 		LoadFavoriteListCache(ctx, userID)
 	} else {
 		// 存在的关系进行更新
 		if (actionType == 1 && !isFavorite) || (actionType == 2 && isFavorite) {
-			if err := model.UpdateFavorite(ctx, userID, videoID, &actionType); err != nil {
+			dto.WriteLog("info", "修改点赞状态")
+			if err := model.UpdateFavorite(ctx, userID, videoID, actionType); err != nil {
 				return err
 			}
-			FavoriteCountAction(ctx, videoID, actionType)
 			// 重新刷新点赞列表
 			LoadFavoriteListCache(ctx, userID)
 		}
@@ -88,6 +77,7 @@ func LoadFavoriteListCache(ctx context.Context, userId int64) ([]dto.Video, erro
 		favoriteVideoList = append(favoriteVideoList, video)
 	}
 	db.CacheSetList(context.Background(), "default", "favorite_video_list"+strconv.FormatInt(userId, 10), favoriteVideoList, time.Hour)
+	dto.WriteLog("info", "刷新点赞列表的缓存")
 	return favoriteVideoList, nil
 }
 
@@ -95,6 +85,7 @@ func GetFavoriteList(ctx context.Context, userId int64) ([]dto.Video, error) {
 
 	favoriteList, _ := db.CacheGetList(context.Background(), "default", "favorite_video_list"+strconv.FormatInt(userId, 10), []dto.Video{})
 	if favoriteList != nil {
+		dto.WriteLog("info", "获取点赞列表")
 		return favoriteList, nil
 	} else {
 		favoriteList, _ = LoadFavoriteListCache(ctx, userId)

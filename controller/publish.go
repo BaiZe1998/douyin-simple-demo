@@ -16,11 +16,6 @@ import (
 	"net/http"
 )
 
-type VideoListResponse struct {
-	Response
-	VideoList []dto.Video `json:"video_list"`
-}
-
 // Publish check token then save upload file to public directory
 func Publish(c *gin.Context) {
 	//需要指定最大上传尺寸，此处无法指定
@@ -78,7 +73,7 @@ func Publish(c *gin.Context) {
 		videos := append([]dto.Video{video}, list...)
 		err = db.CacheSetList(context.Background(), "default", "feedList-"+strconv.FormatInt(userId, 10), videos, time.Minute)
 	}
-	c.JSON(http.StatusOK, Response{
+	c.JSON(http.StatusOK, dto.Response{
 		StatusCode: 0,
 		StatusMsg:  "test" + " uploaded successfully",
 	})
@@ -89,16 +84,16 @@ func PublishList(c *gin.Context) {
 	userId, _ := strconv.ParseInt(c.Query("user_id"), 10, 64)
 	list, err := db.CacheGetList(context.Background(), "default", "publishList-"+c.Query("user_id"), []dto.Video{})
 	if err == nil {
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response: Response{
+		c.JSON(http.StatusOK, dto.VideoListResponse{
+			Response: dto.Response{
 				StatusCode: 0,
 			},
 			VideoList: list,
 		})
 	} else {
 		videoList := service.QueryPublishList1(userId)
-		c.JSON(http.StatusOK, VideoListResponse{
-			Response: Response{
+		c.JSON(http.StatusOK, dto.VideoListResponse{
+			Response: dto.Response{
 				StatusCode: 0,
 			},
 			VideoList: videoList,

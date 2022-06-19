@@ -23,7 +23,7 @@ func QueryPublishList(userId string) []dto.Video {
 	useId, _ := strconv.ParseInt(userId, 10, 64)
 	for index, value := range res {
 		//user is favorite
-		if favoriteInfo, _ := model.QueryIsFavorite(context.Background(), useId, value.ID); favoriteInfo.Status == 1 {
+		if favoriteInfo, _ := model.QueryFavorite(context.Background(), useId, value.ID); favoriteInfo.Status == 1 {
 			isFavorite = true
 		} else {
 			isFavorite = false
@@ -31,7 +31,7 @@ func QueryPublishList(userId string) []dto.Video {
 
 		authorInfo, _ := model.QueryUserById(context.Background(), value.AuthorID)
 		//user is follow
-		if followInfo, _ := model.QueryIsFavorite(context.Background(), useId, value.AuthorID); followInfo.Status == 1 {
+		if followInfo, _ := model.QueryFavorite(context.Background(), useId, value.AuthorID); followInfo.Status == 1 {
 			isFollow = true
 		} else {
 			isFollow = false
