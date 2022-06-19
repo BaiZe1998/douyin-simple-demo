@@ -18,6 +18,19 @@ type Favorite struct {
 
 func CreateFavorite(ctx context.Context, favorite *Favorite) error {
 	tx := DB.Begin()
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return err
+	}
+	// video表点赞数+1
+	if err := UpdateVideoFavorite(ctx, favorite.VideoId, 1); err != nil {
+		tx.Rollback()
+		return err
+	}
 	if err := tx.Table("favorite").WithContext(ctx).Create(favorite).Error; err != nil {
 		tx.Rollback()
 		return err
@@ -25,17 +38,24 @@ func CreateFavorite(ctx context.Context, favorite *Favorite) error {
 	return tx.Commit().Error
 }
 
-func UpdateFavorite(ctx context.Context, userID, videoID int64, status *int) error {
-	params := map[string]interface{}{}
-	if status != nil {
-		params["status"] = *status
-	}
+func UpdateFavorite(ctx context.Context, userID, videoID int64, status int) error {
 	tx := DB.Begin()
-	// if err := DB.Table("favorite").WithContext(ctx).Where("user_id = ? and video_id = ?", userID, videoID).Updates(params).Error; err != nil {
-	// 	tx.Rollback()
-	// 	return err
-	// }
-	if err := DB.Table("favorite").Raw("UPDATE favorite SET status=%d WHERE user_id=%d and video_id=%d", *status, userID, videoID).Error; err != nil {
+	defer func() {
+		if r := recover(); r != nil {
+			tx.Rollback()
+		}
+	}()
+	if err := tx.Error; err != nil {
+		return err
+	}
+	if err := DB.Table("favorite").Raw("UPDATE favorite SET status=%d WHERE user_id=%d and video_id=%d", status, userID, videoID).Error; err != nil {
+		tx.Rollback()
+		return err
+	}
+	if status == 2 {
+		status = -1
+	}
+	if err := UpdateVideoFavorite(ctx, videoID, status); err != nil {
 		tx.Rollback()
 		return err
 	}
@@ -72,23 +92,4 @@ func QueryFavorites(ctx context.Context, userID int64, limit, offset int) ([]Vid
 		}
 	}
 	return videoList, total, nil
-}
-
-//QueryIsFavoritequerytheuserisornotfavoritethevideo
-func QueryIsFavorite(ctx context.Context, userId int64, videoId int64) (Favorite, error) {
-	var res Favorite
-	tx := DB.Begin()
-	defer func() {
-		if r := recover(); r != nil {
-			tx.Rollback()
-		}
-	}()
-	if err := tx.Error; err != nil {
-		return Favorite{}, err
-	}
-	if err := DB.Table("favorite").WithContext(ctx).Where("user_id=? AND video_id=?", userId, videoId).Find(&res).Error; err != nil {
-		tx.Rollback()
-		return res, err
-	}
-	return res, nil
 }
